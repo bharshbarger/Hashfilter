@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 try:
 	#builtin imports
-	import sys, os, hashlib, binascii
+	import sys, os, hashlib, binascii, argparse
 
 	#local imports
-	import setupDB
-	from dbcommands import Database
+	#import setupDB
+	#from dbcommands import Database
 except ImportError as e:
 	raise ImportError('Error importing %s' % e)
 
@@ -19,6 +19,7 @@ class FilterHash():
 		self.hashDict={}
 		self.filterHashDict={}
 		self.database='potfile.db'
+		
 
 
 		if not os.path.exists('potfile'):
@@ -38,12 +39,6 @@ class FilterHash():
 			print('\n[!] Database missing, creating %s \n' % self.database)
 			setupDB.main()
 
-
-
-
-
-
-		
 
 	def ntlm(self):
 
@@ -85,9 +80,10 @@ class FilterHash():
 						self.filterHashDict[h]=hashType,p,hashMode
 
 
+			'''if self.args.useDatabase is True:
 			#send to database with hashType, hashValue, plainText, hashcatMode
-			dbOps = Database(self.filterHashDict)
-			dbOps.add_hash()	
+				dbOps = Database(self.filterHashDict)
+				dbOps.add_hash()'''	
 
 
 	def sha1(self):
@@ -98,6 +94,17 @@ class FilterHash():
 	
 	
 def main():
+
+
+
+
+	'''#https://docs.python.org/3/library/argparse.html
+	parser = argparse.ArgumentParser()
+	parser.add_argument('-a', '--all', help = 'run All modes', action = 'store_true')
+	parser.add_argument('-m', '--mode', help = 'specify a mode', action = 'store_true')
+	parser.add_argument('-v', '--verbose', help = 'Verbose', action = 'store_true')	
+	
+	args = parser.parse_args()'''
 	
 	run=FilterHash()
 	run.ntlm()

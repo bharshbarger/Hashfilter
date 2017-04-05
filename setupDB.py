@@ -14,7 +14,7 @@ class PotfileDatabase():
 	def createdatabase(self):
 
 		# Database Connection
-
+		print('[i] Creating Database')
 		try:
 			connection = sqlite3.connect(self.potfileDB)
 			c = connection.cursor()
@@ -50,6 +50,9 @@ class PotfileDatabase():
 				hashcatmode integer,
 				UNIQUE(hashname),
 				UNIQUE(hashcatmode))''')
+
+			print('[i] Populating NTLM type')
+			c.execute("INSERT INTO hashtypes (hashname, hashcatmode) VALUES ('ntlm','1000') ")
 
 			# Commit and close connection to database
 			connection.commit()
