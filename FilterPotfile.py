@@ -14,13 +14,6 @@ class FilterHash():
 
 	def __init__(self):
 
-
-		if not os.path.exists('potfile'):
-			print('\n[!] Potfile missing, please symlink to this folder')
-			sys.exit(0)
-
-
-
 		self.origPotFileOpen = open('potfile', "r")
 		self.newPotFileOpen=open('./new_pots/ntlm.potfile','w')
 		self.hashDict={}
@@ -28,9 +21,28 @@ class FilterHash():
 		self.database='potfile.db'
 
 
+		if not os.path.exists('potfile'):
+			print('\n[!] Potfile missing, please symlink "potfile" to this folder')
+			sys.exit(0)
+
+		if not os.path.exists('./new_pots'):
+			print('\n[!] "./new_pots missing, creating..."')
+			try:
+				os.makedirs('./new_pots')	
+			except Exception as e:
+				print(e)
+				sys.exit(0)
+
+
 		if not os.path.exists(self.database):
 			print('\n[!] Database missing, creating %s \n' % self.database)
 			setupDB.main()
+
+
+
+
+
+
 		
 
 	def ntlm(self):
@@ -44,8 +56,9 @@ class FilterHash():
 		#read the original potfile
 		for i, line in enumerate(self.origPotFileOpen):
 
-			#split on first colon
-			splitLine = line.split(":")[0]
+			#split on first colon, maxsplit of 1 (in case colons exist in the password)
+			splitLine = line.split(":", 1)
+			
 			#take the split parts, 0 and 1 that are hash and plain, respectively
 			#place into a dict and strip the \r\n off of them
 			self.hashDict[str(splitLine[0].rstrip("\r\n"))]=str(splitLine[1].rstrip("\r\n"))
@@ -66,16 +79,16 @@ class FilterHash():
 					#compare entry with computed
 					if binascii.hexlify(computedHash) == h:
 						#print ('ntlm found! %s ' % h)
+						self.newPotFileOpen.writelines('%s:%s\n'%(h,p))
 
 						#add to new dictionary for eventual database commit
 						self.filterHashDict[h]=hashType,p,hashMode
-		
+
+
 			#send to database with hashType, hashValue, plainText, hashcatMode
 			dbOps = Database(self.filterHashDict)
 			dbOps.add_hash()	
 
-	
-		
 
 	def sha1(self):
 
@@ -83,43 +96,7 @@ class FilterHash():
 
 		print '[+] Searching potfile for hashes with a SHA1 length'
 	
-	'''#iterate the dictionary containing user and hashes
-	for h, u in self.hashDict.items():
-		#write username to text file
-		self.newPotFileOpen.writelines(str(u)+'\n')
-		#write username to credResult for the docx report
-		credResult.append(str(u)+'\n')
-		
-	self.newPotFileOpen.writelines('********CREDENTIALS FOUND BELOW*********\n\n\n\n')
-	credResult.append('********CREDENTIALS FOUND BELOW*********\n\n\n\n')
 	
-	#this section 'cracks' the hashes provided a pre-populated pot file
-	#still in our lookup value iterate potfiles directory. you can have multiple pots, just in case
-	for potFileName in os.listdir('./potfile/'):
-		#open a pot file
-		with open('./potfile/'+potFileName, 'r') as potFile:
-			#tell user you are looking
-			print '[i] Any creds you have in your potfile will appear below as user:hash:plain : '
-			#then look at every line
-			for potLine in potFile:
-				#then for every line look at every hash and user in the dict
-				for h, u in self.hashDict.items():
-					#if the hash in the dict matches a line in the potfile
-					#that is also the same length as the original hash (this is probably a crappy check tho...)
-					if str(h) == str(potLine[0:len(h)]):
-						#print the user: and the line from the potfile (hash:plain) to the user
-						print str(u)+':'+str(potLine.rstrip("\r\n"))
-						#need to append the output to a variable to return or write to the file
-						#this is separate because not all found usernames/emails have hashes and not all hashes are cracked
-						#write to text file
-						self.newPotFileOpen.writelines(str(u)+':'+str(potLine[len(h):]))
-						#add to credResult for docx report
-						credResult.append(str(u)+':'+str(potLine[len(h):]))
-
-
-	return credResult	
-	print credResult'''
-
 def main():
 	
 	run=FilterHash()
