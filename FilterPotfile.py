@@ -58,26 +58,26 @@ class FilterHash():
 			#place into a dict and strip the \r\n off of them
 			self.hashDict[str(splitLine[0].rstrip("\r\n"))]=str(splitLine[1].rstrip("\r\n"))
 
-			#iterate the dictionary object
-			for h, p in self.hashDict.items():
+		#iterate the dictionary object
+		for h, p in self.hashDict.items():
 
-				#ntlm are 32 chars long, compare hashlen
-				if len(h) == 32:
-					
-					#compute new ntlm based on plain in pot
-					computedHash = hashlib.new('md4', p.encode('utf-16le')).digest()
-					
-					#optionally, print
-					#print ('computed %s' % str(binascii.hexlify(computedHash))),
-					#print (p)
+			#ntlm are 32 chars long, compare hashlen
+			if len(h) == 32:
 
-					#compare entry with computed
-					if binascii.hexlify(computedHash) == h:
-						#print ('ntlm found! %s ' % h)
-						self.newPotFileOpen.writelines('%s:%s\n'%(h,p))
+				#compute new ntlm based on plain in pot
+				computedHash = hashlib.new('md4', p.encode('utf-16le')).digest()
 
-						#add to new dictionary for eventual database commit
-						self.filterHashDict[h]=hashType,p,hashMode
+				#optionally, print
+				#print ('computed %s' % str(binascii.hexlify(computedHash))),
+				#print (p)
+
+				#compare entry with computed
+				if binascii.hexlify(computedHash) == h:
+					#print ('ntlm found! %s ' % h)
+					self.newPotFileOpen.writelines('%s:%s\n'%(h,p))
+
+					#add to new dictionary for eventual database commit
+					self.filterHashDict[h]=hashType,p,hashMode
 
 
 			'''if self.args.useDatabase is True:
