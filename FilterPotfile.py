@@ -35,9 +35,9 @@ class FilterHash():
 				sys.exit(0)
 
 
-		if not os.path.exists(self.database):
+		'''if not os.path.exists(self.database):
 			print('\n[!] Database missing, creating %s \n' % self.database)
-			setupDB.main()
+			setupDB.main()'''
 
 
 	def ntlm(self):
