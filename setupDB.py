@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 try:
 	import sqlite3
@@ -30,6 +30,7 @@ class PotfileDatabase():
 				ID INTEGER PRIMARY KEY,
 				plaintext text,
 				hash_val text,
+				type text,
 				client_id integer, 
 				FOREIGN KEY(client_id) REFERENCES client(ID),
 				FOREIGN KEY(hash_val) REFERENCES hashvalue(value))''')
