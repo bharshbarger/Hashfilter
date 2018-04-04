@@ -4,9 +4,13 @@ import sys, os, hashlib, binascii, argparse, signal
 import setupDB
 from dbcommands import Database
 
-class FilterHash():
+class FilterHash(object):
 
-    def __init__(self):
+    def __init__(self, args, parser):
+
+        #import args and parser objects from argparse
+        self.args = args
+        self.parser = parser
 
         self.original_potfile_dict = {}
         self.database = 'potfile.db'
@@ -67,7 +71,7 @@ class FilterHash():
             if (i % 1000000) == 0:
                 print('Read %s lines' % i)
         
-        if args.database is True:
+        if self.args.database is True:
             #send to database with hash_name, hashValue, plainText, hashcatMode
             print('Adding NTLM hashes to database')
             dbOps = Database(ntlm_hash_dict)
@@ -99,7 +103,7 @@ def main():
     
     args = parser.parse_args()
 
-    run = FilterHash()
+    run = FilterHash(args,parser)
     
     if args.mode is None:
         print('please select the hashcat mode(s) of the hashes you want to filter, e.g. FilterHash.py -m 1000 5500')
