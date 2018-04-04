@@ -38,9 +38,9 @@ class Database:
 			#try:
 			cur.execute("INSERT OR IGNORE INTO hashtypes (hashname, hashcatmode) VALUES ('{}', '{}') ".format(t,m))
 			dbconn.commit()
-			cur.execute("INSERT OR IGNORE INTO hashvalue (value, type) VALUES ('{}', '{}') ".format(h,t,t))
+			cur.execute("INSERT OR IGNORE INTO hashvalue (value, plain_text, type) VALUES ('{}', '{}', '{}') ".format(h,p,t))
 			dbconn.commit()
-			cur.execute("INSERT OR IGNORE INTO plain (plaintext, type) VALUES ('{}', '{}') ".format(h,t,t))
+			cur.execute("INSERT OR IGNORE INTO plain (plaintext, type) VALUES ('{}', '{}') ".format(p,h,t))
 			dbconn.commit()
 
 			'''#and display it
