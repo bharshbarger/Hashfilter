@@ -66,30 +66,52 @@ class FilterHash():
             #tell user every millionth line read
             if (i % 1000000) == 0:
                 print('Read %s lines' % i)
-        #send to database with hash_name, hashValue, plainText, hashcatMode
-        print('Adding NTLM hashes to database')
-        dbOps = Database(ntlm_hash_dict)
-        dbOps.add_hash()
-        print('Added NTLM hashes to database')
+        
+        if args.database is True:
+            #send to database with hash_name, hashValue, plainText, hashcatMode
+            print('Adding NTLM hashes to database')
+            dbOps = Database(ntlm_hash_dict)
+            dbOps.add_hash()
+            print('Added NTLM hashes to database')
 
-    def sha1(self):
+        original_potfile.close()
 
+
+    def sha1_filter(self):
+
+        original_potfile = open('potfile', "r")
+        ntlm_hash_dict = {}
         hash_name = 'sha1'
+        hashcat_mode = 100
+        ntlm_potfile = open('./new_pots/ntlm.potfile', 'w+')
+        print('[+] Reading potfile lines')
 
         print('[+] Searching potfile for hashes with a SHA1 length')
     
     
 def main():
-    '''#https://docs.python.org/3/library/argparse.html
+    #https://docs.python.org/3/library/argparse.html
     parser = argparse.ArgumentParser()
-    parser.add_argument('-a', '--all', help = 'run All modes', action = 'store_true')
-    parser.add_argument('-m', '--mode', help = 'specify a mode', action = 'store_true')
+    #parser.add_argument('-a', '--all', help = 'run All modes', action = 'store_true')
+    parser.add_argument('-m', '--mode', help = 'specify a mode', nargs = "*")
+    parser.add_argument('-d', '--database', help='log sorted hashes to a database', action='store_true')
     parser.add_argument('-v', '--verbose', help = 'Verbose', action = 'store_true') 
     
-    args = parser.parse_args()'''
+    args = parser.parse_args()
 
     run = FilterHash()
-    run.ntlm_filter()
+    
+    if args.mode is None:
+        print('please select the hashcat mode(s) of the hashes you want to filter, e.g. FilterHash.py -m 1000 5500')
+        sys.exit(0)
+
+    for m in args.mode:
+        
+        if m == '1000':
+            print('selected mode {}'.format(m))
+            run.ntlm_filter()
+        if m == '100':
+            run.sha1_filter()
 
 
 if __name__ == '__main__':
