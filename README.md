@@ -5,9 +5,13 @@ Read a hashcat potfile and parse different types into a sqlite database and hash
 usage: FilterPotfile.py [-h] [-m [MODE [MODE ...]]] [-d] [-v]
 
 optional arguments:
-  -h, --help            show this help message and exit
-  -m [MODE [MODE ...]], --mode [MODE [MODE ...]]
-                        specify a mode
-  -d, --database        log sorted hashes to a database
-  -v, --verbose         Verbose
+    -h, --help            show this help message and exit
+    
+    -m [MODE [MODE ...]], --mode [MODE [MODE ...]]
+                         specify a mode
+                         
+    -d, --database        log sorted hashes to a database
+    
+    -v, --verbose         Verbose
+    
 
